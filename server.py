@@ -1,12 +1,16 @@
-from flask import Flask
+from flask import Flask, render_template
+
+from weather import  weather_by_city
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def index():
-    return 'Hello!'
+    title = 'Прогноз погоды'
+    weather = weather_by_city('moscow, russia')
+    return render_template('index.html', page_title=title, weather=weather)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
