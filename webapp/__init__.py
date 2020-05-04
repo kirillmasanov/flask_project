@@ -7,6 +7,7 @@ from webapp.weather import weather_by_city
 
 def create_app():
     app = Flask(__name__)
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config.from_pyfile('config.py')
     db.init_app(app)
 
