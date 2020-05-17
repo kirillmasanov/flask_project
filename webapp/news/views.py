@@ -5,6 +5,7 @@ from webapp.db import db
 from webapp.news.forms import CommentForm
 from webapp.news.models import Comment, News
 from webapp.weather import weather_by_city
+from webapp.utils import get_redirect_target
 
 blueprint = Blueprint('news', __name__)
 
@@ -43,4 +44,4 @@ def add_comment():
                     getattr(form, field).label.text,
                     error
                 ))
-    return redirect(request.referrer)
+    return redirect(get_redirect_target())
