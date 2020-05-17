@@ -1,5 +1,5 @@
 from flask import abort, Blueprint, current_app, flash, render_template, redirect, request, url_for
-from flask_login import current_user
+from flask_login import current_user, login_required
 
 from webapp.db import db
 from webapp.news.forms import CommentForm
@@ -28,19 +28,19 @@ def single_news(news_id):
 
 
 @blueprint.route('/news/comment', methods=['POST'])
+@login_required
 def add_comment():
     form = CommentForm()
     if form.validate_on_submit():
-        if News.query.filter(News.id == form.news_id.data).first():
-            comment = Comment(text=form.comment_text.data, news_id=form.news_id.data, user_id=current_user.id)
-            db.session.add(comment)
-            db.session.commit()
-            flash('Комментарий успешно добавлен!')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash('Ошибка в заполнении поля "{}": - {}'.format(
-                        getattr(form, field).label.text,
-                        error
-                    ))
-        return redirect(request.referrer)
+        comment = Comment(text=form.comment_text.data, news_id=form.news_id.data, user_id=current_user.id)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Комментарий успешно добавлен!')
+    else:
+        for field, errors in form.errors.items():
+            for error in errors:
+                flash('Ошибка в заполнении поля "{}": - {}'.format(
+                    getattr(form, field).label.text,
+                    error
+                ))
+    return redirect(request.referrer)
